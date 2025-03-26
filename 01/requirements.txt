@@ -1,1 +1,7 @@
 # TODO: Implement
+pytest
+flake8
+pylint
+coverage
+mypy  # если используете
+black  # если хотите автоформатирование
