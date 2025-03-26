@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        homework: [01, 02]  # Добавляйте новые домашки по мере необходимости
+
+    steps:
+      - name: Checkout репозитория
+        uses: actions/checkout@v3
+
+      - name: Установка Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Установка зависимостей
+        run: |
+          cd ${{ matrix.homework }}
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Запуск тестов с coverage
+        run: |
+          cd ${{ matrix.homework }}
+          pytest --cov=. --cov-report=xml
+
+      - name: Проверка flake8
+        run: |
+          cd ${{ matrix.homework }}
+          flake8 .
+
+      - name: Проверка pylint
+        run: |
+          cd ${{ matrix.homework }}
+          pylint --fail-under=8 *.py
+
+      - name: Проверка mypy (опционально)
+        run: |
+          cd ${{ matrix.homework }}
+          mypy *.py
